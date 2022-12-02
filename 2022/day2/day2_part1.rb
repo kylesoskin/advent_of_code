@@ -1,43 +1,24 @@
-ENC_1 = {
-  ?A => :rock,
-  ?B => :paper,
-  ?C => :scissors
-}
-ENC_2 = {
-  ?X => :rock,
-  ?Y => :paper,
-  ?Z => :scissors
-}
 SCORES = {
-  rock: 1,
-  paper: 2,
-  scissors: 3
+  ?X => 1,
+  ?Y => 2,
+  ?Z => 3
 }
 BEATS = {
-  rock: :scissors,
-  paper: :rock,
-  scissors: :paper
+  ?X => ?Z,
+  ?Y => ?X,
+  ?Z => ?Y
+}
+ENC = {
+  ?A => ?X,
+  ?B => ?Y,
+  ?C => ?Z
 }
 
-def result(combo) 
-  p1, p2 = combo
-  case 
-  when p1 == p2 
-    3 
-  when BEATS[p2] == p1 
-    6
-  else
-    0
-  end
-end
-
-input = File.read('input.txt')
-rounds = input.lines.map {|x| 
-  split = x.split
-  human_readable = [ENC_1[split.first], ENC_2[split.last]]
-  result(human_readable) + SCORES[human_readable.last]
-}
-pp rounds.sum
-
+puts File.read('input.txt').lines.map {|x| 
+  p1, p2 =  x.split
+  p1 = ENC[p1]
+  (p1 == p2 ? 3 : (BEATS[p2] == p1 ? 6 : 0)) + SCORES[p2]
+}.sum
+# Result: 17189
 
 
