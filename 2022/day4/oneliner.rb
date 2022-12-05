@@ -1,0 +1,1 @@
+p File.read('input.txt').lines.map {|l|x,y=l.split(?,).map{|d| d.chomp.split(?-)}.map{|t| t[0].to_i..t[1].to_i}.sort_by{|x|x.to_a.size};y.cover?x}.count{|x|x}
