@@ -15,11 +15,9 @@ diagram_txt.each do |line|
   end
 end
 
-lines.map {|l| 
-  split = l.split(BLANK)
-  [split[1],split[3],split[5]]
-}.each do |move|
-  count, from, to = move.map(&:to_i)
+lines.each do |m|
+  split = m.split(BLANK)
+  count, from, to = [split[1],split[3],split[5]].map(&:to_i)
   count.times do 
     to_move = struct[from].shift
     struct[to].unshift(to_move)
