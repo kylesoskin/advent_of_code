@@ -1,3 +1,4 @@
+BLANK = ' '
 lines       = File.read('input.txt').lines.map(&:chomp)
 
 diagram_txt = lines.shift(10)
@@ -11,13 +12,13 @@ struct = {}
 diagram_txt.each do |line|
   index_of_stacks.each do |k,i|
     struct[k] ||= []
-    struct[k] << line[i] 
+    v = line[i]
+    struct[k] <<  v unless v == BLANK
   end
 end
-struct = struct.map {|k,v| [k, v.reject{|c| c == " "}]}.to_h
 
 moves = lines.map {|l| 
-  split = l.split(' ')
+  split = l.split(BLANK)
   [split[1],split[3],split[5]]
 }
 
