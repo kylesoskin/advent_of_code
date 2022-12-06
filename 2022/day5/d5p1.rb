@@ -2,7 +2,7 @@ BLANK       = ' '
 lines       = File.read('input.txt').lines.map(&:chomp)
 diagram_txt = lines.shift(10)
 diagram_txt.pop
-stack_nums = diagram_txt.last.chars
+stack_nums  = diagram_txt.last.chars
 index_of_stacks = (1..9).map{|n| [n,stack_nums.find_index(n.to_s)]}.to_h
 diagram_txt.pop
 
