@@ -1,9 +1,4 @@
 input = File.read('input.txt').lines.map(&:chomp)
-
-def signal_strength(cycle, x)
-  cycle * x
-end
-
 cycle_count = 0
 x = 1
 cycles = {}
