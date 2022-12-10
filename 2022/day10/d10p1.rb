@@ -24,9 +24,7 @@ end
 index = 20
 acc = 0
 while index <= 220
-  v = signal_strength(index, cycles[index])
-  pp [index, cycles[index], v]
-  acc += v
+  acc += signal_strength(index, cycles[index])
   index += 40
 end
 p acc
