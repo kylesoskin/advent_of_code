@@ -13,7 +13,7 @@ DIGITS = {
 def replace_digits(str)
   has_words = DIGITS.keys.map {|word| [word, str =~ /#{word}/]}.reject{|a| a.last.nil?}
   unless has_words.empty? 
-    ordered_occurring_digit_word = DIGITS.keys.map {|word| [word, str =~ /#{word}/]}.reject{|a| a.last.nil?}.sort_by {|a| a.last}.first.first
+    ordered_occurring_digit_word = has_words.sort_by {|a| a.last}.first.first
     str.sub!(ordered_occurring_digit_word, DIGITS[ordered_occurring_digit_word])
     replace_digits(str)
   end
