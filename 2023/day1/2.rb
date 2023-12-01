@@ -21,9 +21,6 @@ def replace_digits(str)
 end
 
 puts File.read('input.txt').lines.map{|l|
-  ol = l
   chars = replace_digits(l).chars.select {|c| c =~ /[0-9]/}
-  val = [chars[0], chars[-1]].join.to_i
-  # pp [ol, replace_digits(l), chars, val]
-  val
+  [chars[0], chars[-1]].join.to_i
 }.sum
