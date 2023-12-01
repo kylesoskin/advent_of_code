@@ -1,0 +1,1 @@
+p File.read('input.txt').lines.map{|l|l.scan(/[0-9]/).values_at(0,-1).join.to_i}.sum
