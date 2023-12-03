@@ -8,7 +8,9 @@ class String
     h
   end
 end
+
 all = []
+
 File.readlines('input.txt').each do |l|
   split = l.split(?:)
   id = split.shift.split(' ').last.to_i
@@ -23,4 +25,5 @@ File.readlines('input.txt').each do |l|
   end
   all << h.values.map(&:max).inject(&:*)
 end
+
 pp all.sum
