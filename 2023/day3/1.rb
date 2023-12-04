@@ -1,7 +1,6 @@
 BLANK = nil
 all = []
 all_lines = File.readlines('input.txt').map(&:chomp)
-# all_lines = File.readlines('sample.txt').map(&:chomp)
 
 all_lines.map.with_index {|line_content, line_number| 
   nums = line_content.chomp.scan(/\d*/).reject {|x| x.empty?}
