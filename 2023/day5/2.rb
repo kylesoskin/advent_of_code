@@ -24,10 +24,10 @@ class Seed
 end
 
 class AlmanacMap
-  attr_accessor :source_type, :dest_type, :mappings
+  attr_accessor :mappings
 
   def initialize(heading)
-    @source_type, _, @dest_type = heading.split(' ').first.split(?-)
+    # @source_type, _, @dest_type = heading.split(' ').first.split(?-)
     @mappings = {}
   end
 
@@ -61,21 +61,25 @@ def read_maps(filename)
   [seeds, maps]
 end
 
-def find_lowest_location(seeds, maps)
-  lowest = nil
-
-  seeds.each_with_index do |s, index|
-    puts "(#{index}/#{seeds.size - 1})::#{Time.now}:: Working seeds in range: #{s} (#{s.last - s.first})"
-    s.each do |n|
-      location = Seed.new(n).find_location(maps)
-      lowest = location if lowest.nil? || location < lowest
-    end
+def find_lowest_location(seeds, maps)  
+  results = []
+  t = []
+  seeds.each_with_index do |s, index|    
+    t << Thread.new {
+      lowest = nil
+      puts "(#{index}/#{seeds.size - 1})::#{Time.now}:: Working seeds in range: #{s} (#{s.last - s.first})"
+      s.each do |n|
+        location = Seed.new(n).find_location(maps)
+        lowest = location if lowest.nil? || location < lowest
+      end
+      results << lowest
+    }
   end
-
-  lowest
+  t.map(&:join)
+  results
 end
 
-input_filename = 'input.txt'
+input_filename = 'sample.txt'
 seeds, maps = read_maps(input_filename)
 lowest_location = find_lowest_location(seeds, maps)
-puts lowest_location
+puts lowest_location.min
