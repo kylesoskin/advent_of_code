@@ -7,15 +7,25 @@ class Seed
     @num = num.to_i
   end
 
+  def map_eval(i, n, maps)
+    map = maps[i].mappings.find {|sr, dr| sr.include?(n)}
+    if map.nil?
+      n
+    else
+      offset = (n - map[0].first)
+      offset + map[1].first 
+    end
+  end
+
   def find_location(maps)
-    soil = maps[0].mappings[@num] || @num
-    fertilizer = maps[1].mappings[soil] || soil
-    water = maps[2].mappings[fertilizer] || fertilizer
-    light =  maps[3].mappings[water] || water
-    temperature = maps[4].mappings[light] || light
-    humidity = maps[5].mappings[temperature] || temperature
-    location = maps[6].mappings[humidity] || humidity
-    pp [soil, fertilizer, water, light, temperature, humidity, location]
+    soil = map_eval(0, @num, maps)
+    fertilizer = map_eval(1, soil, maps)
+    water = map_eval(2, fertilizer, maps)
+    light =   map_eval(3, water, maps)
+    temperature =  map_eval(4, light, maps)
+    humidity =  map_eval(5, temperature, maps)
+    location =  map_eval(6, humidity, maps)
+    # pp [soil, fertilizer, water, light, temperature, humidity, location]
     location
   end
 
@@ -29,13 +39,10 @@ class AlmanacMap
   end
 
   def add_to_mapping(m)
-    pp "Adding mapping: #{m}"
     dest_range, source_range, len = m.split(' ').map(&:to_i)
-    dr = (dest_range..dest_range+len-1).to_a
-    sr = (source_range..source_range+len-1).to_a
-    (0..dr.length-1).each do |i|
-      @mappings[sr[i]] = dr[i]
-    end
+    dr = (dest_range..dest_range+len-1)
+    sr = (source_range..source_range+len-1)
+    @mappings[sr] = dr
   end
 end
 
