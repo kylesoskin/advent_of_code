@@ -1,7 +1,6 @@
 BLANK = nil
 all = []
 all_lines = File.readlines('input.txt').map(&:chomp)
-all_lines = File.readlines('sample.txt').map(&:chomp)
 
 all_lines.map.with_index {|line_content, line_number| 
   nums = line_content.chomp.scan(/\d*/).reject {|x| x.empty?}
@@ -22,22 +21,11 @@ all_lines.map.with_index {|line_content, line_number|
     above = above_index < 0 ? BLANK : all_lines[above_index][left_index .. left_index + n.length + 1] 
     below = below_index > (all_lines.count-1) ? BLANK : all_lines[below_index][left_index .. left_index + n.length + 1]
     
-    all_surrounding = [above, below, left, right]
-    all << {num: n, a: above, b: below, l: left, r: right, line_number: line_number, index: index}
+    all_surrounding = [above, below, left, right].flatten.join
+    pp [above, below, left, right]
+    no_special_chars = all_surrounding.gsub(/\d/,"").delete(?.).empty?
+    all << n.to_i unless no_special_chars
   }
 }
 
-# vals = []
-# all.each.with_index do |num, index|
-#   if num[:b] =~ /\*/
-#     n1 = num[:num]
-#     found = all.select {|l| l[:line_number] == num[:line_number]+2 && (num[:index]-5 .. num[:index]+5).include?(l[:index])}
-#     unless found.empty?
-#       n2 = found.last[:num]
-#       vals << n1.to_i * n2.to_i
-#     end
-#   end
-# end
-
-pp vals.sum
-pp [vals.sum == 78915902, 78915902 - vals.sum]
+# pp all
