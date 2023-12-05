@@ -32,9 +32,9 @@ class Seed
 end
 
 class AlmanacMap
-  attr_accessor :source_type, :dest_type, :mappings
+  attr_accessor :mappings#,:source_type, :dest_type, 
   def initialize(heading)
-    @source_type, _, @dest_type = heading.split(' ').first.split(?-)
+    # @source_type, _, @dest_type = heading.split(' ').first.split(?-)
     @mappings = {}
   end
 
