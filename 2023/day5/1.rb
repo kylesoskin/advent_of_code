@@ -18,14 +18,12 @@ class Seed
   end
 
   def find_location(maps)
-    soil = map_eval(0, @num, maps)
-    fertilizer = map_eval(1, soil, maps)
-    water = map_eval(2, fertilizer, maps)
-    light =   map_eval(3, water, maps)
-    temperature =  map_eval(4, light, maps)
-    humidity =  map_eval(5, temperature, maps)
-    location =  map_eval(6, humidity, maps)
-    # pp [soil, fertilizer, water, light, temperature, humidity, location]
+    location = @num
+
+    (0..6).each do |i|
+      location = map_eval(i, location, maps)
+    end
+
     location
   end
 
