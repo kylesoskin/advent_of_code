@@ -3,7 +3,6 @@ all = []
 all_lines = File.readlines('input.txt').map(&:chomp)
 # all_lines = File.readlines('sample.txt').map(&:chomp)
 
-
 gears = []
 cord_ids = {}
 coord_list = []
