@@ -18,17 +18,14 @@ def create_enum(x, lrs, mapped)
       moves += 1
       x[:next_dest] = mapped[x[:curr_pos]][direction]
       x[:curr_pos] = x[:next_dest] 
-      y.yield [moves,x[:next_dest]] if x[:next_dest].end_with?(?Z)
+      y.yield [moves, x[:next_dest]] if x[:next_dest].end_with?(?Z)
     end
   end
 end
 
-all_current_pos = mapped.select {|k,v| k.end_with?(?Z)}.keys
-all_current_pos = all_current_pos.map {|k| {curr_pos: k, next_dest: nil, moves: 0}}
+all_current_pos = mapped.select {|k,v| k.end_with?(?Z)}.keys.map {|k| {curr_pos: k, next_dest: nil, moves: 0}}
 
 enums = all_current_pos.map {|k| create_enum(k, lrs, mapped)}
-
-moves = 0
 all_results = enums.map {|e| e.next}
 until all_results.all? {|x| x.last.end_with?(?Z)}
   all_results = enums.map {|e| e.next}

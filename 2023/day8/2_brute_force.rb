@@ -18,7 +18,7 @@ moves = 0
 gnd = nil
 
 
-
+# Will not complete in timely manner... but should work if it could
 lrs.cycle.each do |direction|
   moves += 1
   all_current_pos.each do |x|    
