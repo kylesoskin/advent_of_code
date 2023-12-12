@@ -23,18 +23,31 @@ def find_chunks_from_indexes(indexes)
 end
 
 def all_combos(str)
-  op_locked = find_indexes_of(?., str)
-  broke_locked = find_indexes_of(?#, str)
-  [?.,?#].repeated_permutation(str.size).select {|perm|
-    perm.select.with_index {|v,i| op_locked.include?(i) }.all? {|c| c == ?.} && 
-    perm.select.with_index {|v,i| broke_locked.include?(i) }.all? {|c| c == ?#}
+  # Original, kinda slow
+  # op_locked = find_indexes_of(?., str)
+  # broke_locked = find_indexes_of(?#, str)
+  # [?.,?#].repeated_permutation(str.size).select {|perm|
+  #   perm.select.with_index {|v,i| op_locked.include?(i) }.all? {|c| c == ?.} && 
+  #   perm.select.with_index {|v,i| broke_locked.include?(i) }.all? {|c| c == ?#}
+  # }
+  # Faster
+  unknowns = str.count(??)
+  all_possible = [?.,?#].repeated_permutation(unknowns)
+  positions = find_indexes_of(??, str)
+  all_possible.map {|posible_vals| 
+    ns = str.clone    
+    posible_vals.each.with_index do |v, i|
+      ns[positions[i]] = v
+    end
+    ns
   }
 end
 
+
 pp data.map {|row|
-  # pp ["on row", row]
+  pp ["on row", row, row[0].size]
   spring_conditions, ordering = row
-  all_combos(spring_conditions).map {|s| 
+  c = all_combos(spring_conditions).map {|s| 
     idxs = find_indexes_of(?#, s)
     find_chunks_from_indexes(idxs)
   }.count {|x| x == ordering}
