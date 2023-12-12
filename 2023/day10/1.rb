@@ -62,43 +62,52 @@ class Matrix
   def mark(c, step_counter)
     x = c[:x]
     y = c[:y]
-    @path[y][x] = 'X'
-    # if  @path[y][x].is_a?(Array)
-    #  f = (@path.map {|x| x.map {|s| s.is_a?(Array) ? s : nil}.compact}.flatten.max+1) / 2
-    #  raise "DONE: #{f}"
-    # else
-    #   @path[y][x] = []
-    #   @path[y][x] << step_counter
-    # end
+    # @path[y][x] = [step_counter, @path[y][x]].min
+    if @path[y][x].is_a?(Array)
+      @path[y][x] << step_counter
+    else
+      @path[y][x] = [step_counter]    
+    end
   end
 
   def traversal(x: nil, y: nil, last: nil, step_counter: 0)
-    # @path.each {|f| puts f.join}        
+    current_loc = nil
+    until current_loc == ?S 
+      # @path.each {|f| puts f.join}        
+      # gets
+      # puts  "="*100
+      x = @start_pos[:x] if x.nil?
+      y = @start_pos[:y] if y.nil?
+      z = {x:,y:}
+      mark(z, step_counter)      
+      current_loc = mp(x:, y:)
+      # pp [x, y, current_loc, step_counter]
+      surrounding = get_around_location(x:, y:)
+      # pp [x,y,current_loc, surrounding, @matrix]
     
-    # gets
-    # puts  "="*100
-    x = @start_pos[:x] if x.nil?
-    y = @start_pos[:y] if y.nil?
-    z = {x:,y:}
-    mark(z, step_counter)      
-    current_loc = mp(x:, y:)
-    pp [x, y, current_loc, step_counter]
-    surrounding = get_around_location(x:, y:)
-    # pp [x,y,current_loc, surrounding, @matrix]
-   
-    unless last.nil?
-      surrounding.delete_if {|direction, q| 
-        (q[:x] == last[:x] && q[:y] == last[:y])
+      unless last.nil?
+        surrounding.delete_if {|direction, q| 
+          (q[:x] == last[:x] && q[:y] == last[:y])
+        }
+      end 
+      need_to_visit = surrounding.select {|direction,c|       
+        TOUCH_MAPPINGS.keys.include?(c[:val]) && (! [?S,?.].include?(c[:val])) && CAN_GO_MAP[current_loc].include?(direction)
       }
-    end 
-    need_to_visit = surrounding.select {|direction,c|       
-      TOUCH_MAPPINGS.keys.include?(c[:val]) && (! [?S,?.].include?(c[:val])) && CAN_GO_MAP[current_loc].include?(direction)
-    }
-    return @path if need_to_visit.keys.count == 0
-    need_to_visit.each do |direction,c|
-      traversal(x: c[:x], y: c[:y], last: {x:,y:}, step_counter: step_counter+1) 
+      return @path if need_to_visit.keys.count == 0
+      need_to_visit.each do |direction,c|
+        
+        # traversal(x: c[:x], y: c[:y], last: {x:,y:}, step_counter: step_counter+1) 
+        last = {x:,y:}
+        x = c[:x]
+        y = c[:y]     
+        next if last[:x] == x && last[:y] == y
+        z = {x:,y:} 
+        mark(z, step_counter)      
+        step_counter += 1
+        current_loc = mp(x:, y:)
+      end
+      return @path if current_loc == ?S 
     end
-    return @path if current_loc == ?S 
   end
 
   private
@@ -112,11 +121,13 @@ class Matrix
 end
 
 @matrix = Matrix.new(FILE)
-@matrix.traversal.each {|d| puts d.inspect}
+@matrix.traversal #.each {|d| puts d.inspect}
 all = []
 @matrix.path.each do |row| 
   row.each do |v|
-    all << v if v.is_a?(Array) && v[0] == v[1]
+    all << v.max if v.is_a?(Array)
   end
 end
-pp all
+pp (all.max / 2) - 1
+
+# 6932 too high
