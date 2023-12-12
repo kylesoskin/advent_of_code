@@ -93,10 +93,8 @@ class Matrix
       need_to_visit = surrounding.select {|direction,c|       
         TOUCH_MAPPINGS.keys.include?(c[:val]) && (! [?S,?.].include?(c[:val])) && CAN_GO_MAP[current_loc].include?(direction)
       }
-      return @path if need_to_visit.keys.count == 0
-      need_to_visit.each do |direction,c|
-        
-        # traversal(x: c[:x], y: c[:y], last: {x:,y:}, step_counter: step_counter+1) 
+      return if need_to_visit.keys.count == 0
+      need_to_visit.each do |direction,c|        
         last = {x:,y:}
         x = c[:x]
         y = c[:y]     
@@ -106,7 +104,6 @@ class Matrix
         step_counter += 1
         current_loc = mp(x:, y:)
       end
-      return @path if current_loc == ?S 
     end
   end
 
