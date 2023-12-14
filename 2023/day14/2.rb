@@ -50,7 +50,7 @@ def shift_east(data)
           data[y][x+1] = ROUND_ROCK
           data[y][x] = EMPTY_SPACE
           num_moves += 1
-        ends
+        end
       end
     end
   end
@@ -84,4 +84,6 @@ def cycle(data, count)
   }
   data
 end
-pp (cycle(data, 1000)).map.with_index {|row, i| row.count(ROUND_ROCK) * (data.count-i)}.sum
+
+factor = 10000
+pp (cycle(data, factor)).map.with_index {|row, i| row.count(ROUND_ROCK) * (data.count-i)}.sum
