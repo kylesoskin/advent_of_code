@@ -85,5 +85,5 @@ def cycle(data, count)
   data
 end
 
-factor = 10000
+factor = 1000
 pp (cycle(data, factor)).map.with_index {|row, i| row.count(ROUND_ROCK) * (data.count-i)}.sum
