@@ -1,18 +1,20 @@
 require 'set'
 @data = File.readlines(
-  'sample.txt'
+  'input.txt'
 ).map {|l| l.chomp.chars}
 
-@travel_path = @data.clone
+# this rekt me
+# shallow cloning...
+# @travel_path = @data.clone
+@travel_path = @data.map {|x| x.clone}
 
 EMPTY = ?.
 MIRRORS = ['/', '\\']
 SPLITTERS = ['|', '-']
-@been_to = Set.new
-@move_count = 0 
 
 def move(d, x, y)
-  # @travel_path[y][x] = ?#
+  @travel_path[y][x] = ?#
+  # ox, oy = x,y
   case d
   when :right
     x += 1
@@ -30,12 +32,9 @@ def move(d, x, y)
     raise "Got unknown direction #{d}"
   end
   if y >= @data.size || x >= @data.first.size || x < 0 || y < 0
-    pp ["got x,y of #{[x,y].to_s}, returning nil"]
     return nil
   end
-  @been_to << [x,y]
-  cs = @data[y][x]
-  [cs, x, y]
+  [@data[y][x], x, y]
 end
 
 def mirror_mapping(current_val, heading)
@@ -94,15 +93,20 @@ end
 
 x,y = 0,0
 current_val = @data[y][x]
-heading = :right
+if current_val == EMPTY
+  heading = :right
+elsif MIRRORS.include?(current_val)
+  heading = :down
+end  
 @next_moves = [[heading, x, y]]
+@unchanged_count = 0
 
-until @next_moves.empty?
+until @next_moves.empty? || @unchanged_count > 500000
+  orig_state = @travel_path.map {|x| x.clone}
   d, x, y = @next_moves.shift
   pnext = move(d, x, y)
   next if pnext.nil?
   current_val, x, y = pnext
-  @move_count += 1
   if current_val == EMPTY
     @next_moves << [d, x, y]
   elsif MIRRORS.include?(current_val)
@@ -114,7 +118,16 @@ until @next_moves.empty?
       @next_moves << [d, x, y]
     end
   end
-  pp [@travel_path, @next_moves, current_val, x, y]
-  gets
+  # @travel_path[0..y+10].each{|r| puts r.join[0..x+20]}
+  # pp @next_moves
+  # pp ?=*100
+  end_state = @travel_path.map {|x| x.clone}
+  if orig_state == end_state
+    @unchanged_count += 1 
+  else
+    @unchanged_count = 0
+  end
 end
+
+pp @travel_path.map{|r| r.count(?#)}.sum
 
