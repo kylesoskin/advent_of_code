@@ -1,19 +1,20 @@
-require 'set'
+# frozen_string_literal: true
+
 @data = File.readlines(
   'input.txt'
-).map {|l| l.chomp.chars}
+).map { |l| l.chomp.chars }
 
 # this rekt me
 # shallow cloning...
 # @travel_path = @data.clone
-@travel_path = @data.map {|x| x.clone}
+@travel_path = @data.map(&:clone)
 
-EMPTY = ?.
-MIRRORS = ['/', '\\']
-SPLITTERS = ['|', '-']
+EMPTY = '.'
+MIRRORS = ['/', '\\'].freeze
+SPLITTERS = ['|', '-'].freeze
 
 def move(d, x, y)
-  @travel_path[y][x] = ?#
+  @travel_path[y][x] = '#'
   # ox, oy = x,y
   case d
   when :right
@@ -31,16 +32,15 @@ def move(d, x, y)
   else
     raise "Got unknown direction #{d}"
   end
-  if y >= @data.size || x >= @data.first.size || x < 0 || y < 0
-    return nil
-  end
+  return nil if y >= @data.size || x >= @data.first.size || x.negative? || y.negative?
+
   [@data[y][x], x, y]
 end
 
 def mirror_mapping(current_val, heading)
   case current_val
   when '/'
-    case heading 
+    case heading
     when :left
       :down
     when :right
@@ -51,7 +51,7 @@ def mirror_mapping(current_val, heading)
       :left
     end
   when '\\'
-    case heading 
+    case heading
     when :left
       :up
     when :right
@@ -66,43 +66,44 @@ end
 
 def spliter_mapping(current_val, heading)
   case current_val
-  when ?|
-    case heading 
+  when '|'
+    case heading
     when :left
-      [:up, :down]
+      %i[up down]
     when :right
-      [:up, :down]
+      %i[up down]
     when :up
       [:up]
     when :down
       [:down]
     end
-  when ?-
-    case heading 
+  when '-'
+    case heading
     when :left
       [:left]
     when :right
       [:right]
     when :up
-      [:left, :right]
+      %i[left right]
     when :down
-      [:left, :right]
+      %i[left right]
     end
   end
 end
 
-x,y = 0,0
+x = 0
+y = 0
 current_val = @data[y][x]
 if current_val == EMPTY
   heading = :right
 elsif MIRRORS.include?(current_val)
   heading = :down
-end  
+end
 @next_moves = [[heading, x, y]]
 @unchanged_count = 0
 
-until @next_moves.empty? || @unchanged_count > 500000
-  orig_state = @travel_path.map {|x| x.clone}
+until @next_moves.empty? || @unchanged_count > 10_000
+  orig_state = @travel_path.map(&:clone)
   d, x, y = @next_moves.shift
   pnext = move(d, x, y)
   next if pnext.nil?
@@ -118,16 +119,19 @@ until @next_moves.empty? || @unchanged_count > 500000
       @next_moves << [d, x, y]
     end
   end
-  # @travel_path[0..y+10].each{|r| puts r.join[0..x+20]}
-  # pp @next_moves
-  # pp ?=*100
-  end_state = @travel_path.map {|x| x.clone}
+  # @travel_path[y-10..y+10].each{|r| puts r.join[x-10..x+10]}
+
+  # @travel_path.each{|r| puts r.join}
+  # puts "At #{[x,y]}. Moves remaining: #{@next_moves.count}, unchanged count: #{@unchanged_count}"
+  @next_moves = @next_moves.uniq
+  end_state = @travel_path.map(&:clone)
   if orig_state == end_state
-    @unchanged_count += 1 
+    @unchanged_count += 1
   else
     @unchanged_count = 0
   end
+  # gets
 end
 
-pp @travel_path.map{|r| r.count(?#)}.sum
-
+pp @travel_path.map(&:join)
+pp @travel_path.map { |r| r.count('#') }.sum
