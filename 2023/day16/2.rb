@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 @data = File.readlines(
-  'sample.txt'
+  'input.txt'
 ).map { |l| l.chomp.chars }
 
 EMPTY = '.'
@@ -82,54 +82,51 @@ def spliter_mapping(current_val, heading)
   end
 end
 
-@y_max = @data.size-1
-@x_max = @data.first.size-1
-def get_direction_options(y,x)
+@y_max = @data.size - 1
+@x_max = @data.first.size - 1
+def get_direction_options(y, x)
   # corners
-  ret = case 
-  when (x == 0 && y == 0) 
-    [:right, :down]
-  when (y == 0 && x == @x_max) 
-    [:left, :down]
-  when (y == @y_max && x == 0)
-    [:right, :up]
-  when (y == @y_max && x == @x_max)
-    [:left, :up]
+  if x.zero? && y.zero?
+    %i[right down]
+  elsif y.zero? && x == @x_max
+    %i[left down]
+  elsif y == @y_max && x.zero?
+    %i[right up]
+  elsif y == @y_max && x == @x_max
+    %i[left up]
   # everything else
-  when y == 0 
+  elsif y.zero?
     [:down]
-  when x == 0
+  elsif x.zero?
     [:right]
-  when y == @y_max
+  elsif y == @y_max
     [:up]
-  when x == @x_max
+  elsif x == @x_max
     [:left]
   else
     []
-  end 
-  ret
+  end
 end
 
 all = []
 xs = (0..@x_max).to_a
 ys = (0..@y_max).to_a
 
-
 all_to_try = []
 ys.each do |y|
   xs.each do |x|
-    all_to_try << [y,x]
+    all_to_try << [y, x]
   end
 end
-oof =  all_to_try.map {|t| 
-  y,x = t
-  d = get_direction_options(y,x)
-  [d,y,x]
-}
+oof = all_to_try.map do |t|
+  y, x = t
+  d = get_direction_options(y, x)
+  [d, y, x]
+end
 oof.each do |v|
   direction_options, y, x = v
   current_val = @data[y][x]
-  direction_options.each do |heading| 
+  direction_options.each do |heading|
     @travel_path = @data.map(&:clone)
     @next_moves = [[heading, x, y]]
     @been_to = Set.new
@@ -137,7 +134,6 @@ oof.each do |v|
       d, x, y = @next_moves.shift
       pnext = move(d, x, y)
       next if pnext.nil?
-
       current_val, x, y = pnext
       if current_val == EMPTY
         n = [d, x, y]
@@ -155,8 +151,8 @@ oof.each do |v|
       end
       @next_moves = @next_moves.uniq
     end
-    all << [y,x,heading, @travel_path.map { |r| r.count('#') }.sum]
+    all << [y, x, heading, @travel_path.map { |r| r.count('#') }.sum]
   end
 end
 
-pp all.max_by {|d| d.last}.last
+pp all.max_by(&:last).last
