@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'set'
+
 @data = File.readlines(
   'input.txt'
 ).map { |l| l.chomp.chars }
@@ -14,7 +14,7 @@ MIRRORS = ['/', '\\'].freeze
 SPLITTERS = ['|', '-'].freeze
 
 def move(d, x, y)
-  @travel_path[y][x] = ?#
+  @travel_path[y][x] = '#'
   @been_to << [d, x, y]
   case d
   when :right
@@ -29,6 +29,7 @@ def move(d, x, y)
     raise "Got unknown direction #{d}"
   end
   return nil if y >= @data.size || x >= @data.first.size || x.negative? || y.negative?
+
   [@data[y][x], x, y]
 end
 
@@ -98,18 +99,19 @@ end
 @unchanged_count = 0
 @been_to = Set.new
 
-until @next_moves.empty? 
+until @next_moves.empty?
   orig_state = @travel_path.map(&:clone)
   d, x, y = @next_moves.shift
   pnext = move(d, x, y)
   next if pnext.nil?
+
   current_val, x, y = pnext
   if current_val == EMPTY
     n = [d, x, y]
     @next_moves << n unless @been_to.include?(n)
   elsif MIRRORS.include?(current_val)
     next_direction = mirror_mapping(current_val, d)
-    n = [next_direction, x, y] 
+    n = [next_direction, x, y]
     @next_moves << n unless @been_to.include?(n)
   elsif SPLITTERS.include?(current_val)
     next_directions = spliter_mapping(current_val, d)
