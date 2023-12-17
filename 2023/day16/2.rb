@@ -20,12 +20,8 @@ def move(d, x, y)
     y -= 1
   when :down
     y += 1
-  else
-    raise "Got unknown direction #{d}"
   end
-  return nil if y >= @data.size || x >= @data.first.size || x.negative? || y.negative?
-
-  [@data[y][x], x, y]
+  x.negative? || y.negative? || y > @y_max || x > @x_max ? nil : [@data[y][x], x, y]
 end
 
 def mirror_mapping(current_val, heading)
@@ -107,23 +103,17 @@ def get_direction_options(y, x)
     []
   end
 end
-
-all = []
 xs = (0..@x_max).to_a
 ys = (0..@y_max).to_a
 
 all_to_try = []
 ys.each do |y|
   xs.each do |x|
-    all_to_try << [y, x]
+    all_to_try << [get_direction_options(y, x), y, x]
   end
 end
-oof = all_to_try.map do |t|
-  y, x = t
-  d = get_direction_options(y, x)
-  [d, y, x]
-end
-oof.each do |v|
+max = 0
+all_to_try.each do |v|
   direction_options, y, x = v
   current_val = @data[y][x]
   direction_options.each do |heading|
@@ -134,6 +124,7 @@ oof.each do |v|
       d, x, y = @next_moves.shift
       pnext = move(d, x, y)
       next if pnext.nil?
+
       current_val, x, y = pnext
       if current_val == EMPTY
         n = [d, x, y]
@@ -149,10 +140,10 @@ oof.each do |v|
           @next_moves << n unless @been_to.include?(n)
         end
       end
-      @next_moves = @next_moves.uniq
     end
-    all << [y, x, heading, @travel_path.map { |r| r.count('#') }.sum]
+    v = @travel_path.map { |r| r.count('#') }.sum
+    max = v if v > max
   end
 end
 
-pp all.max_by(&:last).last
+puts max
