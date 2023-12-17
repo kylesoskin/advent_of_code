@@ -96,11 +96,9 @@ elsif MIRRORS.include?(current_val)
   heading = :down
 end
 @next_moves = [[heading, x, y]]
-@unchanged_count = 0
 @been_to = Set.new
 
 until @next_moves.empty?
-  orig_state = @travel_path.map(&:clone)
   d, x, y = @next_moves.shift
   pnext = move(d, x, y)
   next if pnext.nil?
@@ -121,12 +119,6 @@ until @next_moves.empty?
     end
   end
   @next_moves = @next_moves.uniq
-  end_state = @travel_path.map(&:clone)
-  if orig_state == end_state
-    @unchanged_count += 1
-  else
-    @unchanged_count = 0
-  end
 end
 
 pp @travel_path.map { |r| r.count('#') }.sum
