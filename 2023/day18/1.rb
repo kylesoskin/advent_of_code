@@ -30,4 +30,9 @@ x, y = 0, 0
     y, x = walk_one(dir, y, x)
   end
 end
-pp @travel_path
+pp @travel_path.map {|r| 
+  edge_str = r.map {|s| s.nil? ? '.' : s}.join
+  last_pos = edge_str.rindex(?#)
+  first_pos = edge_str.index(?#)
+  [edge_str, last_pos - first_pos + 1]
+}.map(&:last).sum
