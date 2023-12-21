@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-file, @step_target = ['input.txt', 64]
+file = 'input.txt'
+@step_target = 64
 # file, @step_target = ['sample.txt', 6]
 @data = File.readlines(file).map { |l| l.chomp.chars }
 
@@ -12,6 +13,7 @@ end
 def mark_and_return_next(curr_pos)
   y, x = curr_pos
   return [] if is_invalid_pos?(curr_pos) || @been_to.include?([@num_step - 1, y, x])
+
   @been_to << [@num_step, y, x]
   @data[y][x] = 'O'
 
@@ -31,20 +33,14 @@ start_x = @data[start_y].index('S')
 @been_to = Set.new
 curr_pos = [[start_y, start_x]]
 curr_state = nil
-(@step_target+1).times do
+(@step_target + 1).times do
   orig_points = curr_pos.clone
   curr_pos = curr_pos.map { |pos| mark_and_return_next(pos) }.flatten(1).uniq
-  curr_state = @data.map(&:join).join("\n") 
+  curr_state = @data.map(&:join).join("\n")
   orig_points.each do |pos|
     y, x = pos
     @data[y][x] = '.'
   end
   @num_step += 1
-  pp [@num_step, @been_to.count, curr_pos.count]
-  puts curr_state
-
-  gets
 end
-
-# puts all_states.join("\n\n")
-pp curr_state.lines.map { |r| r.count('O') }.sum 
+puts curr_state.lines.map { |r| r.count('O') }.sum
