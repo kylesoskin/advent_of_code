@@ -23,7 +23,7 @@ def mark_and_return_next(curr_pos)
   right = [y, x + 1]
   [up, down, left, right].reject do |pos|
     y, x = pos
-    is_invalid_pos?([y, x]) || @data[y][x] == '#' || @data[y][x] == '0'
+    is_invalid_pos?([y, x]) || @data[y][x] == '#'
   end
 end
 
@@ -43,4 +43,4 @@ curr_state = nil
   end
   @num_step += 1
 end
-puts curr_state.lines.map { |r| r.count('O') }.sum
+puts curr_state.lines.map { |r| r.count('O') }.sum 
