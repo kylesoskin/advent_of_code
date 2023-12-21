@@ -21,7 +21,7 @@ def mark_and_return_next(curr_pos)
   right = [y, x + 1]
   [up, down, left, right].reject do |pos|
     y, x = pos
-    is_invalid_pos?([y, x]) || @data[y][x] == '#'
+    is_invalid_pos?([y, x]) || @data[y][x] == '#' || @data[y][x] == '0'
   end
 end
 
@@ -33,7 +33,7 @@ curr_pos = [[start_y, start_x]]
 curr_state = nil
 (@step_target+1).times do
   orig_points = curr_pos.clone
-  curr_pos = curr_pos.map { |pos| mark_and_return_next(pos) }.flatten(1)
+  curr_pos = curr_pos.map { |pos| mark_and_return_next(pos) }.flatten(1).uniq
   curr_state = @data.map(&:join).join("\n") 
   orig_points.each do |pos|
     y, x = pos
