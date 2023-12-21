@@ -30,18 +30,21 @@ start_x = @data[start_y].index('S')
 @num_step = 0
 @been_to = Set.new
 curr_pos = [[start_y, start_x]]
-
-all_states = []
+curr_state = nil
 (@step_target+1).times do
   orig_points = curr_pos.clone
   curr_pos = curr_pos.map { |pos| mark_and_return_next(pos) }.flatten(1)
-  all_states << @data.map(&:join).join("\n")  
+  curr_state = @data.map(&:join).join("\n") 
   orig_points.each do |pos|
     y, x = pos
     @data[y][x] = '.'
   end
   @num_step += 1
+  pp [@num_step, @been_to.count, curr_pos.count]
+  puts curr_state
+
+  gets
 end
 
 # puts all_states.join("\n\n")
-pp all_states.last.lines.map { |r| r.count('O') }.sum 
+pp curr_state.lines.map { |r| r.count('O') }.sum 
