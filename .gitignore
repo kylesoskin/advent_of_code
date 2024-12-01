@@ -1,3 +1,4 @@
+*/*/input.txt
 *.gem
 *.rbc
 /.config
@@ -20,7 +21,7 @@
 .dat*
 .repl_history
 build/
-*.bridgesupport
+*.bridgesupport58
 build-iPhoneOS/
 build-iPhoneSimulator/
 
