@@ -37,9 +37,7 @@ def cycle_and_return(u, to_move = 1)
 end
 
 @updates.each do |u|
-  u.dup
   errors = check_rules(u)
-  errors.dup
   next if errors.empty?
 
   until errors.empty?
