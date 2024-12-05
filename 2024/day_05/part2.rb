@@ -1,19 +1,25 @@
 # frozen_string_literal: true
 
 input = File.read('input.txt')
+# input = File.read('sample_input.txt')
 rules, updates = input.split(/^$/)
 @rules = rules.lines.map { |r| r.chomp.split('|') }
 @updates = updates.lines.map { |r| r.chomp.split(',') }.reject(&:empty?)
 to_sum = []
 
+@rule_hash = {}
+@rules.each do |r|
+  x = r[0]
+  @rule_hash[x] ||= []
+  @rule_hash[x] << r[1]
+end
+
 def check_rules(update)
   errors = []
   update.each_with_index do |num, i|
-    applicable_rules = @rules.select { |a| a[0] == num && update.include?(a[1]) }
-    req = applicable_rules.map(&:last)
-    next if i.zero?
+    next if i.zero? || @rule_hash[num].nil?
 
-    offenders = (req & update[0..i])
+    offenders = (@rule_hash[num] & update[0..i])
     errors.concat(offenders) unless offenders.empty?
   end
   errors
