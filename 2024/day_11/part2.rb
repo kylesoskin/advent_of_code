@@ -19,17 +19,6 @@ def single_num_transform(stone_val)
   return new_val
 end
 
-# gets single val hash
-def check_cache(d)
-  catch_hit = @cache[d]
-  if catch_hit.nil?
-    result = single_num_transform(d)
-    @cache[d] = result
-  else
-    @cache[d] = catch_hit    
-  end
-end
-
 input = File.read('sample_input.txt').lines[0].chomp.split(' ').map(&:to_i)
 @blink_count=6
 c = 0
@@ -39,14 +28,14 @@ def dive(num,depth)
   rtable = {}
   result = [num]
   (0..depth).each {|i|
-    result = result.map {|d| result[d]||single_num_transform(d)}.flatten
+    result = result.map {|d| rtable[d]||single_num_transform(d)}
     rtable[i] = result
-    # pp rtable
   }
   rtable
 end
 
 expanded_mapping = input.map {|num| 
- dive(num, @blink_count)
+ dive(num, @blink_count-1)
 }
 
+pp expanded_mapping.map {|e| e[@blink_count-1]}
