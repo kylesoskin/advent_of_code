@@ -9,7 +9,6 @@ UPPER_LIMIT = 99
 num_at_zero = 0
 current_pos = START_POS
 arr = 0..UPPER_LIMIT
-arr.to_a.rotate(START_POS)
 
 File.readlines(input).each do |line|
   l = line.chars
