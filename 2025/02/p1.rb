@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# input = 'sample_input.txt'
-input = 'input.txt'
+input = 'sample_input.txt'
+# input = 'input.txt'
 
 def is_mirror?(num)
   chars = num.to_s.chars
