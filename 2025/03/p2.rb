@@ -8,7 +8,6 @@ def has_x_to_right(digits, pos, x)
 end
 
 BANKS = File.read(input).lines.map(&:chomp)
-ITERS = (0..9).to_a.reverse
 all = []
 BANKS.map do |b|
   digits = b.chars.map(&:to_i)
