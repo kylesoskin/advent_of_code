@@ -13,7 +13,6 @@ data.each do |line|
   end
 end
 def mult(d)
-  pp d
   d.inject(1) { |prod, n| prod * n }
 end
 
